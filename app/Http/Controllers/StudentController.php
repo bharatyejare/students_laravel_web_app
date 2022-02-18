@@ -15,8 +15,6 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        // $student = Student::all();
-        // return view('index', compact('student'));
         if ($request->ajax()) {
             $data = Student::select('*');
             
@@ -33,11 +31,7 @@ class StudentController extends Controller
 
     public function getstudents(Request $request) {
         if ($request->ajax()) {
-            
             $data = DB::table('students')->select('name','roll_no','image','class_no', DB::raw('SUM(subject_score) as subject_score'))->groupBy('name','roll_no','image','class_no') ->orderByDesc('subject_score');
-            
-            //dd($data);
-            
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){   
@@ -85,7 +79,6 @@ class StudentController extends Controller
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
                 // Get Filename
                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                
                 $imageName = $request->image->extension(); 
                 $storeData['image']='images/'.$filename.'.'.$imageName;
                 $request->image->move(public_path('images'),$filename.'.'.$imageName);
@@ -136,8 +129,6 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $student = Student::findOrFail($id);
-        $student->delete();
-        return redirect('/students')->with('completed', 'Student has been deleted');
+        
     }
 }
